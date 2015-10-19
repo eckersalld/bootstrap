@@ -143,15 +143,11 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
     return arrays;
   };
 
-  // Fix a hard-reprodusible bug with timezones
-  // The bug depends on OS, browser, current timezone and current date
-  // i.e.
-  // var date = new Date(2014, 0, 1);
-  // console.log(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours());
-  // can result in "2013 11 31 23" because of the bug.
+  // Fixed the fix so it uses the offset to set the date as a UTC/GMT date rather than rely on the hour being 23
   this.fixTimeZone = function(date) {
-    var hours = date.getHours();
-    date.setHours(hours === 23 ? hours + 2 : 0);
+    var currentMinutes = date.getMinutes(),
+        offset = date.getTimezoneOffset();
+    date.setMinutes(currentMinutes - offset);
   };
 
   $scope.select = function(date) {
